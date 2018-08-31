@@ -17,6 +17,7 @@ class Callapi::Call::Request::Http < Callapi::Call::Request::Base
 
   def response
     with_logging do
+      http.use_ssl = true if use_ssl?
       http.request(request)
     end
   end
@@ -51,5 +52,9 @@ class Callapi::Call::Request::Http < Callapi::Call::Request::Base
 
   def put_params_in_request_body?
     [:post, :patch, :put].include? request_method
+  end
+  
+  def use_ssl?
+    uri.scheme == 'https'
   end
 end
