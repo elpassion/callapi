@@ -17,8 +17,9 @@ class Callapi::Call::Request::Http < Callapi::Call::Request::Base
 
   def response
     with_logging do
-      http.use_ssl = true if use_ssl?
-      http.request(request)
+      Net::HTTP.start(uri.host, uri.port, use_ssl: use_ssl?) do |http|
+        http.request(request) 
+      end 
     end
   end
 
@@ -26,11 +27,6 @@ class Callapi::Call::Request::Http < Callapi::Call::Request::Base
 
   def host
     raise NotImplementedError
-  end
-
-  def http
-    #TODO: Use HTTParty
-    Net::HTTP.new(uri.host, uri.port)
   end
 
   def request
